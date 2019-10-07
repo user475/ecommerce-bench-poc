@@ -1,0 +1,22 @@
+
+	<table id="myProductList" class="table table-striped table-bordered"
+		dt:table="true">
+		<thead>
+			<tr>
+				<th>Product Name</th>
+				<th>Description</th>
+				<th>Price</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="product : ${list}">
+				<td th:text="${product?.productName}"></td>
+				<td th:text="${product?.productDescrption}"></td>
+				<td th:text="${product?.price}"></td>
+				<td><button th:id="'button'+${product.pid}"
+						class="btn btn-info" th:onclick="|addToCart('${product.pid}')|"
+						type="submit">Add to cart</button></td>
+
+			</tr>
+		</tbody>
+	</table>

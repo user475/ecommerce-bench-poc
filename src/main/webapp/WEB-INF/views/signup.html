@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html  xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"
+	xmlns:dt="http://www.thymeleaf.org/dandelion/datatables" />
+<link rel="stylesheet"
+href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<link rel="stylesheet"
+href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css">
+<script
+src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script
+src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+
+<title>Registration</title>
+</head>
+<body>
+<body>
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<div class="navbar-header page-scroll">
+
+				<a class="navbar-brand" href="#">Ecommerce</a>
+			</div>
+
+		</div>
+	</nav>
+	<div align="center">
+		<h1>Signup</h1>
+
+		<form th:action="@{/signup}" th:object="${customer}" method="post">
+			<table>
+				<input type="hidden" th:field="*{userId}"></input>
+				<tr>
+					<td>First Name :</td>
+					<td><input type="text" class="form-control"
+						th:field="*{firstName}"  required="required"  ></input>
+						<span  th:if="${#fields.hasErrors('firstName')}"  th:errors="*{firstName}"></span>
+						</td>
+				</tr>
+				<tr>
+					<td>Last Name :</td>
+					<td><input type="text" class="form-control"
+						th:field="*{lastName}"   required="required"></input>
+						<span  th:if="${#fields.hasErrors('lastName')}"  th:errors="*{lastName}"></span></td>
+				</tr>
+				<tr>
+					<td>EmailId :</td>
+					<td><input type="email" class="form-control"
+						th:field="*{emailId}"  required="required"></input>
+						<span  th:if="${#fields.hasErrors('emailId')}"  th:errors="*{emailId}"></span></td>
+				<tr>
+					<td>Password :</td>
+					<td><input type="password" class="form-control"
+						th:field="*{password}"   maxlength="10"
+						onkeyup="CheckPasswordStrength(this.value)"  required="required"></input> <span
+						id="password_strength"></span>
+						<span  th:if="${#fields.hasErrors('password')}"  th:errors="*{password}"></span></td>
+				</tr>
+				<tr>
+					<td>Contact Number :</td>
+					<td><input type="text" class="form-control"
+						th:field="*{mobileNo}" id="mobileNo"
+						onkeyup="check(); return false;"
+						onkeypress="return isNumberKey(event)" pattern="[6-9]{1}[0-9]{9}"
+						  required="required"></input>
+						 <span  th:if="${#fields.hasErrors('mobileNo')}"  th:errors="*{mobileNo}"></span></td>
+				</tr>
+				<span id="mobileErrorMessage"></span>
+				<!-- <tr>
+					&nbsp;&nbsp;
+					<td><button class="btn btn-danger" type="submit">Register</button></td>
+				</tr> -->
+			</table>
+			<div style="margin-top: 5px; text-align: center">
+				<button class="btn btn-danger" type="submit">Register</button>
+			</div>
+
+			<p style="margin-top: 5px; text-align: center">
+				Already have an account? <a th:href="@{/login}"> Login </a>
+			</p>
+			<div>
+				<p style="color: red;" th:text=${error} th:value=${error}></p>
+			</div>
+		</form>
+	</div>
+</body>
+<script type="text/javascript" th:inline="javascript">
+    
+ 
+   /*<![CDATA[*/
+	  
+          
+           function isNumberKey(evt){
+        	   console.log(evt);
+         	var charCode = (evt.which) ? evt.which : event.keyCode;
+		    if (charCode > 31 && (charCode < 48 || charCode > 57))
+		        return false;
+		    return true;
+		} 
+           function check()
+           {
+
+               var mobile = document.getElementById('mobileNo');
+
+
+               var message = document.getElementById('mobileErrorMessage');
+
+             
+               if(mobile.value.length > 10){
+       
+                   message.innerHTML = "required 10 digits, match requested format!"
+               }
+               if(mobile.value.length == 10){
+            	 
+            	   message.innerHTML = " "
+               }
+               
+           }
+           function CheckPasswordStrength(password) {
+               var password_strength = document.getElementById("password_strength");
+        
+               //TextBox left blank.
+               if (password.length == 0) {
+                   password_strength.innerHTML = "";
+                   return;
+               }
+        
+               //Regular Expressions.
+               var regex = new Array();
+               regex.push("[A-Z]"); //Uppercase Alphabet.
+               regex.push("[a-z]"); //Lowercase Alphabet.
+               regex.push("[0-9]"); //Digit.
+               regex.push("[$@$!%*#?&]"); //Special Character.
+        
+               var passed = 0;
+        
+               //Validate for each Regular Expression.
+               for (var i = 0; i < regex.length; i++) {
+                   if (new RegExp(regex[i]).test(password)) {
+                       passed++;
+                   }
+               }
+        
+               //Validate for length of Password.
+               if (passed > 2 && password.length > 6) {
+                   passed++;
+               }
+        
+               //Display status.
+               var color = "";
+               var strength = "";
+               switch (passed) {
+                   case 0:
+                   case 1:
+                       strength = "Weak";
+                       color = "red";
+                       break;
+                   case 2:
+                       strength = "Good";
+                       color = "darkorange";
+                       break;
+                   case 3:
+                   case 4:
+                       strength = "Strong";
+                       color = "green";
+                       break;
+                   case 5:
+                       strength = "Very Strong";
+                       color = "darkgreen";
+                       break;
+               }
+               password_strength.innerHTML = strength;
+               password_strength.style.color = color;
+           }        
+    /*]]>*/
+  </script>
+</html>

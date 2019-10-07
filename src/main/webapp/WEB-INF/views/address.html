@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"
+	xmlns:dt="http://www.thymeleaf.org/dandelion/datatables" />
+<link rel="stylesheet"
+	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script
+	src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<title>Catalog Home</title>
+<style>
+#search-image:hover {
+	background: #0b7dda;
+}
+
+#search-image::after {
+	content: "";
+	clear: both;
+	display: table;
+}
+</style>
+
+</head>
+<body>
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<div class="navbar-header page-scroll">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target="#bs-example-navbar-collapse-1">
+					<span class="sr-only">Toggle navigation</span> Menu <i
+						class="fa fa-bars"></i>
+				</button>
+				<a class="navbar-brand" href="#">Ecommerce</a>
+			</div>
+
+
+			<div class="collapse navbar-collapse"
+				id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav navbar-left">
+					
+					<li ><a th:href="@{/home}"  th:text=#{title.home}>home</a></li>
+					<li><a th:href="@{/my-orders}" th:text=#{title.my-orders}>My Orders</a></li>
+					<li><a th:href="@{/cart}" th:text=#{title.cart}>Cart</a></li>
+					<li><input type="text" placeholder="Search.." id="search2"
+						style="padding: 10px; font-size: 17px; border: 1px solid grey; float: left; width: 80%; background: #f1f1f1;">
+						<button type="submit"
+							th:onclick="|search(document.getElementById('search2').value)|"
+							style="float: left; width: 20%; padding: 10px; background: #2196F3; color: white; font-size: 17px; border: 1px solid grey; border-left: none; cursor: pointer;">
+							<i class="fa fa-search"></i>
+						</button></li>
+				</ul>
+				<div style="float: right; margin-top: 10px">
+					<a th:href="@{/logout}" class="btn btn-info">Logout</a>
+				</div>
+			</div>
+
+
+		</div>
+	</nav>
+
+	<div class="container-fluid">
+		<div align="center">
+		<h1>Address</h1>
+		<form th:action="@{/address}" th:object="${address}" method="post">
+			<table >
+				<tr>
+					<td>Location :</td>
+					<td><input type="text" class="form-control" name="location"
+						th:field="*{location}"  required="required"  ></input>
+						</td>
+				</tr>
+				<tr >
+					<td>State :</td>
+					<td><input type="text" class="form-control" name="State"
+						th:field="*{State}"  required="required"  ></input>
+						</td>
+				</tr>
+				<tr>
+					<td>Pincode :</td>
+					<td><input type="text" class="form-control" name="Pincode"
+						th:field="*{Pincode}"  required="required"  ></input>
+						</td>
+				</tr>
+				
+			</table>
+			<div style="margin-top: 5px; text-align: center">
+				<button class="btn btn-danger" type="submit">Add address</button>
+			</div>
+			
+		</div>
+		<div style=" margin-top: 20px; width:100%">
+		<h3>Your Addresses</h3>
+		<div >
+			<div class="col-md-12">
+				<div class="row">
+					<div class="table-responsive">
+						<table id="myCourseList"
+							class="table table-striped table-bordered" dt:table="true">
+							<thead>
+								<tr>
+									<th>Location</th>
+									<th>State</th>
+									<th>pincode</th>
+									
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="address : ${addressList}">
+									<td th:text="${address?.location}"></td>
+									<td th:text="${address?.state}"></td>
+									<td th:text="${address?.pincode}"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		</div>
+	</div>
+</body>
+
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+
+	function search(searchText) {
+		console.log("searchText ..." + searchText);
+
+		//	console.log("infoId" + infoId);
+		$.ajax({
+			type : "POST",
+
+			cache : false,
+			url : "http://localhost:8080/assign-ecomm/search",
+
+			data : {
+				searchText : searchText
+			},
+			dataType : 'html',
+
+			success : function(result) {
+				console.log(result);
+				$('div.table-responsive').find('table').remove();
+				$('div.table-responsive').append(result);
+			},
+			error : function(error) {
+				alert(error[0]);
+			}
+
+		});
+	}
+
+	/*]]>*/
+</script>
+</html>
+

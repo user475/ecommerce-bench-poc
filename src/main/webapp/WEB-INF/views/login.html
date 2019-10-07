@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"
+	xmlns:dt="http://www.thymeleaf.org/dandelion/datatables" />
+<link rel="stylesheet"
+	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script
+	src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+<title th:text=#{login.title}></title>
+
+
+
+</head>
+<body>
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<div class="navbar-header page-scroll">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target="#bs-example-navbar-collapse-1">
+					<span class="sr-only">Toggle navigation</span> Menu <i
+						class="fa fa-bars"></i>
+				</button>
+				<a class="navbar-brand" href="#">Ecommerce</a>
+			</div>
+
+		</div>
+	</nav>
+	<div align="center">
+		<h1>Login</h1>
+	<p style="color: red;" th:text=${error} th:value=${error}></p>
+		<form action="#" th:action="@{/login}" method="post">
+			
+			<table>
+			<tr>
+					<td th:text=#{login.username}>username:</td>
+					<td><input type="text" class="form-control" name="emailId"
+						required="required"></input></td>
+				</tr>
+				<tr>
+					<td th:text=#{login.password}>Password:</td>
+					<td><input type="password" class="form-control"
+						name="password" required="required"></input></td>
+				</tr>
+
+			</table>
+			<div style="margin-top: 5px; text-align: center">
+				<button class="btn btn-danger" type="submit">Login</button>
+			</div>
+			
+			<a href="login?mylocale=en">English </a> | <a href="login?mylocale=fr">French </a>
+		</form>
+
+
+		<p style="margin-top: 5px; text-align: center">
+			Not a user? <a th:href="@{/signup}">&nbsp; Signup</a>
+		</p>
+
+
+	</div>
+</body>
+</html>

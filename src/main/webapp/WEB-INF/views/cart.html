@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"
+	xmlns:dt="http://www.thymeleaf.org/dandelion/datatables" />
+<link rel="stylesheet"
+	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css">
+<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+<script
+	src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<title>Catalog Home</title>
+<style>
+.success-box {
+  margin:50px 0;
+  padding:10px 10px;
+  border:1px solid #eee;
+  background:#f9f9f9;
+}
+
+.success-box img {
+  margin-right:10px;
+  display:inline-block;
+  vertical-align:top;
+}
+
+.success-box > div {
+  vertical-align:top;
+  display:inline-block;
+  color:#888;
+}
+
+/* Rating Star Widgets Style */
+.rating-stars ul {
+  list-style-type:none;
+  padding:0;
+  
+  -moz-user-select:none;
+  -webkit-user-select:none;
+}
+.rating-stars ul > li.star {
+  display:inline-block;
+  
+}
+
+/* Idle State of the stars */
+.rating-stars ul > li.star > i.fa {
+  font-size:2.5em; /* Change the size of the stars */
+  color:#ccc; /* Color on idle state */
+}
+
+/* Hover state of the stars */
+.rating-stars ul > li.star.hover > i.fa {
+  color:#FFCC36;
+}
+
+/* Selected state of the stars */
+.rating-stars ul > li.star.selected > i.fa {
+  color:#FF912C;
+}
+ </style>
+</head>
+<body>
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<div class="navbar-header page-scroll">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target="#bs-example-navbar-collapse-1">
+					<span class="sr-only">Toggle navigation</span> Menu <i
+						class="fa fa-bars"></i>
+				</button>
+				<a class="navbar-brand" href="#">Ecommerce</a>
+			</div>
+
+
+			<div class="collapse navbar-collapse"
+				id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav navbar-left">
+					<li></li>
+					<li><a th:href="@{/home}"  th:text=#{title.home}>home</a></li>
+					<li th:class="(${orderHistory} ==true)? 'active':''"><a
+						th:href="@{/my-orders}" th:text=#{title.my-orders}>My Orders</a></li>
+					<li th:class="(!${orderHistory} ==true)? 'active':''"><a
+						th:href="@{/cart}" th:text=#{title.cart}>Cart</a></li>
+
+				</ul>
+
+				<div style="float: right; margin-top: 10px">
+					<a th:href="@{/logout}" class="btn btn-info">Logout</a>
+				</div>
+			</div>
+
+
+		</div>
+	</nav>
+	<div class="container-fluid">
+		<div th:if="${not #lists.isEmpty(orderList)}">
+			<div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="row">
+							<div class="table-responsive">
+								<table id="myProductList"
+									class="table table-striped table-bordered" dt:table="true">
+									<thead>
+										<tr>
+											<th>Product Name</th>
+											<th>Description</th>
+											<th>Price</th>
+											<th></th>
+											
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:id="'row'+${order.orderId}"
+											th:each="order : ${orderList}">
+											<td th:text="${order?.productName}"></td>
+
+											<td th:text="${order?.productDescrption}"></td>
+											<td th:text="${order?.orderPrice}"></td>
+											<td th:if=${!orderHistory}><button
+													th:id="'button'+${order.orderId}" class="btn btn-info"
+													th:onclick="|removeFromCart('${order.orderId}')|"
+													type="submit">Remove</button></td>
+										<td th:if=${orderHistory}>
+										<div th:if=${order?.feedback}>
+											<p th:text="${order?.feedback}"></p>
+										</div>
+										<button  th:if=!${order?.feedback} th:onclick="|displayFeedback('${order.orderId}')|"
+													type="submit" th:id="feddbackButton" class="btn btn-info "  data-toggle="modal" >FeedBack</button></td>
+											
+
+										</tr>
+									</tbody>
+								</table>
+							</div>
+
+						</div>
+					</div>
+				</div>
+				<button th:if=${!orderHistory} th:id="buttonBuyNow"
+					class="btn btn-info" th:onclick="|buyNow()|" type="submit">Buy
+					Now</button>
+			</div>
+			<br />
+			<div th:if="${not #sets.isEmpty(addressList)}">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="row">
+							<div class="table-responsive">
+								<table id="myProductList"
+									class="table table-striped table-bordered" dt:table="true">
+									<thead>
+										<tr>
+										<th>sno</th>
+										<th></th>
+											<th>Location</th>
+											<th>state</th>
+											<th>Pincode</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:id="${address.addressId}"
+											th:each="address : ${addressList}">
+											<td><p th:text="${addressStat.count}"></p></td>
+											<td><input type="radio" name="selectAddress" th:id="${address.addressId}" th:checked="${addressStat.index}  == 0"></td>
+											<td th:text="${address?.location}"></td>
+											<td th:text="${address?.state}"></td>
+											<td th:text="${address?.pincode}"></td>
+
+										</tr>
+									</tbody>
+								</table>
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+			<div> 
+				<a th:href="@{/address}"
+				th:text="(${orderHistory} == true) ? '':'Add new address'"></a>
+			</div>
+		</div>
+
+		<div th:if="${#lists.isEmpty(orderList)}">
+			<a th:href="@{/home}"
+				th:text="(${orderHistory} == true) ? 'Not Orders Yet':'NOt Added cart'"></a>
+		</div>
+
+
+	</div>
+	<!--Dialog -->
+	<div class="modal fade" id="feedbackModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h3 class="modal-title">Feedback</h3>
+        </div>
+        <div class="modal-body" >
+        <h4>Please provide your feedback</h4>
+          <textarea  rows="4" cols="50" id="feedbackText" ></textarea>
+          
+          <!-- Start Bar-->
+          <div class='rating-stars text-center'>
+			<ul id='stars'>
+			  <li class='star' title='Poor' data-value='1'>
+				<i class='fa fa-star fa-fw'></i>
+			  </li>
+			  <li class='star' title='Fair' data-value='2'>
+				<i class='fa fa-star fa-fw'></i>
+			  </li>
+			  <li class='star' title='Good' data-value='3'>
+				<i class='fa fa-star fa-fw'></i>
+			  </li>
+			  <li class='star' title='Excellent' data-value='4'>
+				<i class='fa fa-star fa-fw'></i>
+			  </li>
+			  <li class='star' title='WOW!!!' data-value='5'>
+				<i class='fa fa-star fa-fw'></i>
+			  </li>
+			</ul>
+		  </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" th:onclick="|feedback()|">Submit</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</body>
+
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+
+	function feedback() {
+		console.log("feedback clicked"+$('#feedbackText').val());
+		var comments= $('#feedbackText').val();
+		var orderId= $('.modal-body').attr("id");
+		var ratingValue = parseInt($('#stars li.selected').last().data('value'), 10);
+		console.log("ratingValue ::::: "+ratingValue);
+		console.log("feedback clicked orderId "+orderId);
+		if(!comments){
+			alert("please provide feedback");
+		}else{
+			$.ajax({
+				type : "GET",
+				dataType : 'text',
+				cache : false,
+				url : "http://localhost:8080/Ecommerce-Assigement/order/feedback",
+
+				data : {
+					orderId : orderId,
+					feedback :comments,
+					ratingValue:ratingValue
+				},
+
+				success : function(result) {
+					$('#feedbackText').val(' ');
+
+				},
+				error : function(error) {
+					alert(error[0]);
+				}
+
+			});
+		}
+		
+		
+	}
+	function displayFeedback(orderId) {
+		console.log("orderId" + orderId);
+		$('#feedbackModal').modal('show');
+		$('.modal-body').attr("id",orderId);
+	}
+	function buyNow() {
+        var addressId = $("input[name='selectAddress']:checked").attr("id");
+       console.log("addressId"+addressId);
+        if(!addressId){
+        	alert('please select Address');
+        }else{       
+            var orderIdList=[];
+            $("tr[id^='row']").each(function(index){
+                var orderId =$( this ).attr('id').replace('row','');
+               
+                console.log( index + ": " + orderId);
+                orderIdList.push(orderId);
+               
+                });
+            if(orderIdList.length == 0 ){
+				
+            	alert('please select order');
+            }else{       
+       
+                console.log(" orderIdList: " + orderIdList);
+                    $.ajax({
+                        type : "POST",
+                        dataType : 'text',
+                        cache : false,
+                        url : "http://localhost:8080/Ecommerce-Assigement/order/buy-now",
+                        data : {orderIdList : orderIdList,
+                        	addressId : addressId  },
+           
+                        success : function(result) {
+                           
+                                console.log("result"+result);
+                                window.location.href = "home";
+                        } ,
+                        error : function(error) {
+                            alert(error[0]);
+                        }
+           
+                    });
+                }
+        }
+    }
+						
+	function removeFromCart(orderId) {
+		console.log("orderId" + orderId);
+		var infoId = "button" + orderId;
+		$.ajax({
+			type : "GET",
+			dataType : 'text',
+			cache : false,
+			url : "http://localhost:8080/Ecommerce-Assigement/order/cancel",
+
+			data : {
+				orderId : orderId
+			},
+
+			success : function(result) {
+				$('#row' + orderId).remove();
+
+			},
+			error : function(error) {
+				alert(error[0]);
+			}
+
+		});
+	}
+
+	$(document).ready(function(){
+		  
+		  /* 1. Visualizing things on Hover - See next part for action on click */
+		  $('#stars li').on('mouseover', function(){
+		    var onStar = parseInt($(this).data('value'), 10); // The star currently mouse on
+		   
+		    // Now highlight all the stars that's not after the current hovered star
+		    $(this).parent().children('li.star').each(function(e){
+		      if (e < onStar) {
+		        $(this).addClass('hover');
+		      }
+		      else {
+		        $(this).removeClass('hover');
+		      }
+		    });
+		    
+		  }).on('mouseout', function(){
+		    $(this).parent().children('li.star').each(function(e){
+		      $(this).removeClass('hover');
+		    });
+		  });
+		  
+		  
+		  /* 2. Action to perform on click */
+		  $('#stars li').on('click', function(){
+		    var onStar = parseInt($(this).data('value'), 10); // The star currently selected
+		    var stars = $(this).parent().children('li.star');
+		    
+		    for (i = 0; i < stars.length; i++) {
+		      $(stars[i]).removeClass('selected');
+		    }
+		    
+		    for (i = 0; i < onStar; i++) {
+		      $(stars[i]).addClass('selected');
+		    }
+		    
+		    // JUST RESPONSE (Not needed)
+		    var ratingValue = parseInt($('#stars li.selected').last().data('value'), 10);
+			console.log("ratingValue ::::: "+ratingValue);
+		  
+		    
+		  });
+		  
+		  
+		});
+	/*]]>*/
+</script>
+</html>
+
